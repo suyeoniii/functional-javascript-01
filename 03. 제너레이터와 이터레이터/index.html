@@ -1,23 +1,30 @@
-<script>const log = console.log;</script>
+<script>
+  const log = console.log;
+</script>
 
-# 제너레이터/이터레이터
-- 제너레이터: 이터레이터이자 이터러블을 생성하는 함수
+# 제너레이터/이터레이터 - 제너레이터: 이터레이터이자 이터러블을 생성하는 함수,
+이터레이터를 반환하는 함수
 
 <script>
   function* gen() {
-    yield 1;
+    // 어떤 값이든 순회할 수 있게만들 수 있음
+    // 제너레이터
+    yield 1; // yield를 통해, 몇번의 next로 값을 꺼낼지 정할 수 있음
     if (false) yield 2;
     yield 3;
+    return 100; // -> done은 true가 됨, 순회에는 이 값이 포함되지 않음
   }
 
-  let iter = gen();
+  let iter = gen(); //제너레이터를 실행한 결과는 이터레이터
   log(iter[Symbol.iterator]() == iter);
+  log(iter.next()); // {value: 1, done: false}
   log(iter.next());
   log(iter.next());
-  log(iter.next());
-  log(iter.next());
+  log(iter.next()); // {value: 100, done: true}, return 값이 없으면 value: undefined
+  // 제너레이터로 이터레이터를 만듬
+  // 이터레이터이자, 이터러블
 
-  for (const a of gen()) log(a);
+  for (const a of gen()) log(a); // 순회 가능 - yield의 값 나옴
   console.clear();
 </script>
 
@@ -25,6 +32,7 @@
 
 <script>
   function* infinity(i = 0) {
+    // 0부터 1씩 증가하며 무한히 이터레이터 생성
     while (true) yield i++;
   }
 
@@ -36,6 +44,7 @@
   }
 
   function* odds(l) {
+    // 홀수만 발생시키는 iterator를 만들어서 순회하는 예제
     for (const a of limit(l, infinity(1))) {
       if (a % 2) yield a;
     }
@@ -55,13 +64,13 @@
   console.clear();
 </script>
 
-# for of, 전개 연산자, 구조 분해, 나머지 연산자
+# for of, 전개 연산자, 구조 분해, 나머지 연산자 = iterable 프로토콜을 따름
 
 <script>
   log(...odds(10));
   log([...odds(10), ...odds(20)]);
 
-  const [head, ...tail] = odds(5);
+  const [head, ...tail] = odds(5); // 구조분해
   log(head);
   log(tail);
 
